@@ -6,6 +6,29 @@
 from nekoparse import music_file2data, GenreConventionError
 from warnings import warn
 
+TAG_LIST = [
+        'pv',
+        'amv',
+        'live',
+        'long',
+        'court',
+        'cover',
+        'remix',
+        'inst',
+        ]
+
+def extract_tags(genre):
+    """ From the genre dictionnary, returns list of tags
+    """ 
+    tags = []
+
+    for tag_name in TAG_LIST:
+        if genre.get(tag_name):
+            tags.append(tag_name.upper())
+
+    return tags
+    
+
 def parse_file_name(file_name):
     """ From a file name, returns a dictionnary with revelant values 
     """
@@ -30,23 +53,6 @@ def parse_file_name(file_name):
     result['link_nb'] = None
     result['work_type'] = None
 
-    # tags
-    tags = []
-    genre = data['genre']
-    tag_list = [
-            'pv',
-            'amv',
-            'live',
-            'long',
-            'court',
-            'cover',
-            'remix',
-            ]
-
-    for tag_name in tag_list:
-        if genre.get(tag_name):
-            tags.append(tag_name.upper())
-
-    result['tags'] = tags
+    result['tags'] = extract_tags(data['genre'])
 
     return result

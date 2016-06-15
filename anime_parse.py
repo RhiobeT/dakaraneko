@@ -4,6 +4,7 @@
 #
 
 from nekoparse import anime_file2data
+from music_parse import extract_tags
 
 def parse_file_name(file_name):
     """ From a file name, returns a dictionnary with revelant values 
@@ -33,5 +34,7 @@ def parse_file_name(file_name):
         result['link_nb'] = None
 
     result['artists'] = []
+
+    result['tags'] = extract_tags(data['genre'])
 
     return result
