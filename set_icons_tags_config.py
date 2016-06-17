@@ -33,7 +33,7 @@ context_dummy = dict(request=RequestFactory().get('/'))
 django.setup()
 
 # Work Types Icons
-work_type_icons = {"Anime": "television", "Live action": "television", "Game": "gamepad"}
+work_type_icons = {"Anime": "television", "Live action": "film", "Game": "gamepad", "Dessin anime": "globe" }
 
 for key, value in work_type_icons.items():
     work_type = WorkType.objects.filter(name=key).first()
