@@ -15,7 +15,8 @@ def parse_file_name(file_name):
     result['detail'] = data['detail']
     result['title_work'] = data['title_anime']
     result['subtitle_work'] = data['subtitle_anime']
-    result['work_type'] = 'Anime'
+    result['work_type_name'] = 'Anime'
+    result['work_type_query_name'] = 'anime'
     genre = data['genre']
     if genre['op']:
         result['link_type'] = 'OP'
