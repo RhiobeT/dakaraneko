@@ -25,7 +25,8 @@ def parse_file_name(file_name):
         result['detail'] = lang
         
     result['subtitle_work'] = data['subtitle_cartoon']
-    result['work_type'] = 'Dessin anime'
+    result['work_type_name'] = 'Dessin anime'
+    result['work_type_query_name'] = 'dessin-anime'
     genre = data['genre']
     if genre['op']:
         result['link_type'] = 'OP'
