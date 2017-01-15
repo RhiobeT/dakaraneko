@@ -3,54 +3,75 @@
 # Dakara Project
 #
 
-from karaneko.nekoparse import NekoParseMusic, ConventionError
+from karaneko.nekoparse import NekoParseMusic, NekoParseTagsGeneric, ConventionError
 from warnings import warn
 
-TAG_LIST = [
-        'pv',
-        'amv',
-        'live',
-        'long',
-        'cover',
-        'remix',
-        ]
+TAGS_DICT = {
+        tag[0]: tag[2] for tag in NekoParseTagsGeneric.TAGS_BASE
+        }
 
-def extract_tags(genre):
+def extract_tags(tags):
     """ From the genre dictionnary, returns list of tags
     """ 
-    tags = []
+    tags_list = []
 
-    for tag_name in TAG_LIST:
-        if getattr(genre, tag_name):
-            tags.append(tag_name.upper())
+    for tag_attr, tag_name in TAGS_DICT.items():
+        if getattr(tags, tag_attr):
+            tags_list.append(tag_name)
 
-    return tags
-    
+    return tags_list
 
 def parse_file_name(file_name):
     """ From a file name, returns a dictionnary with revelant values 
     """
     result = {}
-    parser = NekoParseMusic(file_name)
+    music = NekoParseMusic(file_name)
+    music.parse()
 
-    try:
-        parser.parse()
+    result['title_music'] = music.title_music
+    result['version'] = music.extras.version
+    result['detail'] = music.details
+    result['artists'] = music.singers
+    result['artists'].extend(music.composers)
+    if music.extras.original_artist:
+        result['artists'].append(music.extras.original_artist)
 
-    except ConventionError as error:
-        warn("Error with '{}': {}".format(file_name, error))
-        raise ValueError
+    extras = music.extras
+    if extras.opening:
+        result['link_type'] = 'OP'
+        result['link_nb'] = extras.opening_nbr
+        result['title_work'] = extras.opening
 
-    result['title_music'] = parser.title_music
-    result['detail'] = parser.details
-    result['artists'] = parser.singers
-    result['artists'].extend(parser.composers)
+    elif extras.ending:
+        result['link_type'] = 'ED'
+        result['link_nb'] = extras.ending_nbr
+        result['title_work'] = extras.ending
 
-    result['title_work'] = None
-    result['subtitle_work'] = None
-    result['link_type'] = None
-    result['link_nb'] = None
-    result['work_type'] = None
+    elif extras.insert_song:
+        result['link_type'] = 'IN'
+        result['title_work'] = extras.insert_song
 
-    result['tags'] = extract_tags(parser.tags)
+    elif extras.image_song:
+        result['link_type'] = 'IS'
+        result['title_work'] = extras.image_song
+
+    if result.get('link_type'):
+        result['work_type_name'] = 'Anime'
+        result['work_type_query_name'] = 'anime'
+
+    detail_video_list = []
+    if extras.video:
+        detail_video_list.append(extras.video)
+
+    if extras.amv:
+        detail_video_list.append(extras.amv)
+
+    if extras.title_video:
+        detail_video_list.append(extras.title_video)
+
+    result['detail_video'] = ', '.join(detail_video_list)
+
+    result['subtitle_work'] = "" # TODO
+    result['tags'] = extract_tags(music.tags)
 
     return result
