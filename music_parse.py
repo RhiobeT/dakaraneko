@@ -37,28 +37,6 @@ def parse_file_name(file_name):
         result['artists'].append(music.extras.original_artist)
 
     extras = music.extras
-    if extras.opening:
-        result['link_type'] = 'OP'
-        result['link_nb'] = extras.opening_nbr
-        result['title_work'] = extras.opening
-
-    elif extras.ending:
-        result['link_type'] = 'ED'
-        result['link_nb'] = extras.ending_nbr
-        result['title_work'] = extras.ending
-
-    elif extras.insert_song:
-        result['link_type'] = 'IN'
-        result['title_work'] = extras.insert_song
-
-    elif extras.image_song:
-        result['link_type'] = 'IS'
-        result['title_work'] = extras.image_song
-
-    if result.get('link_type'):
-        result['work_type_name'] = 'Anime'
-        result['work_type_query_name'] = 'anime'
-
     detail_video_list = []
     if extras.video:
         detail_video_list.append(extras.video)
@@ -71,7 +49,6 @@ def parse_file_name(file_name):
 
     result['detail_video'] = ', '.join(detail_video_list)
 
-    result['subtitle_work'] = "" # TODO
     result['tags'] = extract_tags(music.tags)
 
     return result

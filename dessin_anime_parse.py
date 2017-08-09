@@ -18,7 +18,6 @@ def parse_file_name(file_name):
     result['detail'] = cartoon.details
     result['title_work'] = cartoon.title_cartoon
     result['subtitle_work'] = cartoon.subtitle_cartoon or ''
-    result['work_type_name'] = 'Dessin animé'
     result['work_type_query_name'] = 'dessin-anime'
 
     tags = cartoon.tags
