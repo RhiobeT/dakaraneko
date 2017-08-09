@@ -13,24 +13,11 @@ def parse_file_name(file_name):
     cartoon = NekoParseCartoon(file_name)
     cartoon.parse()
 
-    title = cartoon.title_music
+    result['title_music'] = cartoon.title_music or cartoon.title_cartoon
+    result['version'] = ', '.join(v for v in (cartoon.extras.version, cartoon.language) if v)
+    result['detail'] = cartoon.details
     result['title_work'] = cartoon.title_cartoon
-    if title:
-        result['title_music'] = title
-    else:
-        result['title_music'] = cartoon.title_cartoon
-    detail = cartoon.details
-
-    lang = cartoon.language 
-    if detail:
-            result['detail'] = detail + " - " + lang
-    else:
-            result['detail'] = lang
-
-    result['detail_video'] = ""
-    result['version'] = ""
-        
-    result['subtitle_work'] = cartoon.subtitle_cartoon or '' 
+    result['subtitle_work'] = cartoon.subtitle_cartoon or ''
     result['work_type_name'] = 'Dessin animé'
     result['work_type_query_name'] = 'dessin-anime'
 
@@ -38,6 +25,7 @@ def parse_file_name(file_name):
     if tags.opening:
         result['link_type'] = 'OP'
         result['link_nb'] = tags.opening_nbr
+
     elif tags.ending:
         result['link_type'] = 'ED'
         result['link_nb'] = tags.ending_nbr
@@ -48,7 +36,27 @@ def parse_file_name(file_name):
     elif tags.image_song:
         result['link_type'] = 'IS'
 
+    extras = cartoon.extras
     result['artists'] = []
+    if extras.artist:
+        result['artists'].append(extras.artist)
+
+    if cartoon.extras.original_artist:
+        result['artists'].append(cartoon.extras.original_artist)
+
+    detail_video_list = []
+    if extras.video:
+        detail_video_list.append(extras.video)
+
+    if extras.amv:
+        detail_video_list.append(extras.amv)
+
+    if extras.title_video:
+        detail_video_list.append(extras.title_video)
+
+    result['detail_video'] = ', '.join(detail_video_list)
+
+    result['episodes'] = extras.episodes
 
     result['tags'] = extract_tags(tags)
 
