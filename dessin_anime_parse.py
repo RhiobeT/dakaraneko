@@ -3,49 +3,61 @@
 # Dakara Project
 #
 
-from nekoparse import cartoon_file2data
+from karaneko.nekoparse import NekoParseCartoon
 from music_parse import extract_tags
 
 def parse_file_name(file_name):
     """ From a file name, returns a dictionnary with revelant values 
     """
     result = {}
-    data = cartoon_file2data(file_name)
-    title = data['title_music']
-    result['title_work'] = data['title_cartoon']
-    if title:
-        result['title_music'] = title
-    else:
-        result['title_music'] = result['title_work']
-    detail = data['detail']
-    lang = data['language']
-    if detail:
-        result['detail'] = detail + " - " + lang
-    else:
-        result['detail'] = lang
-        
-    result['subtitle_work'] = data['subtitle_cartoon']
-    result['work_type_name'] = 'Dessin anime'
+    cartoon = NekoParseCartoon(file_name)
+    cartoon.parse()
+
+    result['title_music'] = cartoon.title_music or cartoon.title_cartoon
+    result['version'] = ', '.join(v for v in (cartoon.extras.version, cartoon.language) if v)
+    result['detail'] = cartoon.details
+    result['title_work'] = cartoon.title_cartoon
+    result['subtitle_work'] = cartoon.subtitle_cartoon or ''
+    result['work_type_name'] = 'Dessin animé'
     result['work_type_query_name'] = 'dessin-anime'
-    genre = data['genre']
-    if genre['op']:
+
+    tags = cartoon.tags
+    if tags.opening:
         result['link_type'] = 'OP'
-        result['link_nb'] = genre['op_nbr']
-    elif genre['ed']:
+        result['link_nb'] = tags.opening_nbr
+
+    elif tags.ending:
         result['link_type'] = 'ED'
-        result['link_nb'] = genre['ed_nbr']
-    elif genre['ins']:
+        result['link_nb'] = tags.ending_nbr
+
+    elif tags.insert_song:
         result['link_type'] = 'IN'
-        result['link_nb'] = None 
-    elif genre['is']:
+
+    elif tags.image_song:
         result['link_type'] = 'IS'
-        result['link_nb'] = None 
-    else:
-        result['link_type'] = None
-        result['link_nb'] = None
 
+    extras = cartoon.extras
     result['artists'] = []
+    if extras.artist:
+        result['artists'].append(extras.artist)
 
-    result['tags'] = extract_tags(data['genre'])
+    if cartoon.extras.original_artist:
+        result['artists'].append(cartoon.extras.original_artist)
+
+    detail_video_list = []
+    if extras.video:
+        detail_video_list.append(extras.video)
+
+    if extras.amv:
+        detail_video_list.append(extras.amv)
+
+    if extras.title_video:
+        detail_video_list.append(extras.title_video)
+
+    result['detail_video'] = ', '.join(detail_video_list)
+
+    result['episodes'] = extras.episodes
+
+    result['tags'] = extract_tags(tags)
 
     return result
