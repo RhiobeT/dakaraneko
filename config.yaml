@@ -37,14 +37,18 @@ tags:
 #    icon_name: smile-o
 worktypes:
   - query_name: anime
-    name: Animes
+    name: Anime
+    name_plural: Animes
     icon_name: television
   - query_name: live-action
-    name: Live actions
+    name: Live action
+    name_plural: Live actions
     icon_name: film
   - query_name: game
-    name: Jeux
+    name: Jeu
+    name_plural: Jeux
     icon_name: gamepad
   - query_name: dessin-anime
-    name: Dessins animés
+    name: Dessin animé
+    name_plural: Dessins animés
     icon_name: globe
