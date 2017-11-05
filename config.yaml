@@ -45,10 +45,10 @@ worktypes:
     name_plural: Live actions
     icon_name: film
   - query_name: game
-    name: Jeu
-    name_plural: Jeux
+    name: Game
+    name_plural: Games
     icon_name: gamepad
-  - query_name: dessin-anime
-    name: Dessin animé
-    name_plural: Dessins animés
+  - query_name: cartoon
+    name: Cartoon
+    name_plural: Cartoons
     icon_name: globe
