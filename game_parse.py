@@ -8,7 +8,6 @@ def parse_file_name(file_name):
     """ From a file name, returns a dictionnary with revelant values 
     """
     result = parse_file_name_music(file_name)
-    result['work_type_name'] = 'Game'
     result['work_type_query_name'] = 'game'
 
     return result

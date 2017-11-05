@@ -18,13 +18,13 @@ def parse_file_name(file_name):
     result['detail'] = anime.details
     result['title_work'] = anime.title_anime
     result['subtitle_work'] = anime.subtitle_anime or ''
-    result['work_type_name'] = 'Anime'
     result['work_type_query_name'] = 'anime'
 
     tags = anime.tags
     if tags.opening:
         result['link_type'] = 'OP'
         result['link_nb'] = tags.opening_nbr
+
     elif tags.ending:
         result['link_type'] = 'ED'
         result['link_nb'] = tags.ending_nbr
