@@ -7,12 +7,13 @@
 set -e
 DAKARA_SERVER_DIR=/path/to/dakara-server
 DAKARANEKO_DIR=/path/to/dakaraneko
-ACTIVATE_PATH=/home/user/.virtualenvs/virtualenv_name/bin/activate
 KARA_DIR=/path/to/karaoke_folder/
 OPTIONS="--prune --append-only --no-progress"
 cd ${DAKARA_SERVER_DIR}/dakara_server
-# Activate virtualenv
-source ${ACTIVATE_PATH}
+
+# Activate virtualenv (uncomment to use it)
+# ACTIVATE_PATH=/home/user/.virtualenvs/virtualenv_name/bin/activate
+# source ${ACTIVATE_PATH}
 
 ./manage.py feed $KARA_DIR $OPTIONS --parser $DAKARANEKO_DIR/music_parse.py --directory Wmusic
 ./manage.py feed $KARA_DIR $OPTIONS --parser $DAKARANEKO_DIR/music_parse.py --directory CJKmusic
