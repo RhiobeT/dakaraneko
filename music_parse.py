@@ -3,15 +3,14 @@
 # Dakara Project
 #
 
-from karaneko.nekoparse import NekoParseMusic, NekoParseTagsGeneric, ConventionError
-from warnings import warn
+from karaneko.nekoparse import NekoParseMusic, NekoParseTagsMusic
 
 def extract_tags(tags):
-    """ From the genre dictionnary, returns list of tags
-    """ 
+    """ From the tags dictionnary, returns list of tags
+    """
     tags_list = []
 
-    for tag in NekoParseTagsGeneric.tags:
+    for tag in NekoParseTagsMusic.tags:
         if getattr(tags, tag['name']):
             tags_list.append(tag['serializer'])
 

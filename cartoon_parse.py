@@ -3,8 +3,22 @@
 # Dakara Project
 #
 
-from karaneko.nekoparse import NekoParseCartoon
-from music_parse import extract_tags
+from karaneko.nekoparse import NekoParseCartoon, NekoParseTagsCartoon
+
+def extract_tags(tags):
+    """ From the tags dictionnary, returns list of tags
+    """
+    tags_list = []
+
+    for tag in NekoParseTagsCartoon.tags:
+        if tag['category'] == 'use':
+            # ignore use tags
+            continue
+
+        if getattr(tags, tag['name']):
+            tags_list.append(tag['serializer'])
+
+    return tags_list
 
 def parse_file_name(file_name):
     """ From a file name, returns a dictionnary with revelant values 
