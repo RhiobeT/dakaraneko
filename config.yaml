@@ -24,6 +24,10 @@ tags:
     color_id: 6
   - name: INST
     color_id: 7
+  - name: SPOIL
+    color_id: 8
+  - name: NSFW
+    color_id: 9
 
 # You have to provide the types of works used here. Work types are identified by
 # their query name (hyphenated name, with no special characters, used as key
