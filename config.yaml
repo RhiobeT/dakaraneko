@@ -9,25 +9,25 @@
 #    color_id: 0
 tags:
   - name: PV
-    color_id: 0
+    color_hue: 162
   - name: AMV
-    color_id: 1
+    color_hue: 140
   - name: LIVE
-    color_id: 2
+    color_hue: 100
   - name: LONG
-    color_id: 3
+    color_hue: 280
   - name: COURT
-    color_id: 4
+    color_hue: 255
   - name: COVER
-    color_id: 5
+    color_hue: 65
   - name: REMIX
-    color_id: 6
+    color_hue: 20
   - name: INST
-    color_id: 7
+    color_hue: 215
   - name: SPOIL
-    color_id: 8
+    color_hue: 360
   - name: NSFW
-    color_id: 9
+    color_hue: 315
 
 # You have to provide the types of works used here. Work types are identified by
 # their query name (hyphenated name, with no special characters, used as key
