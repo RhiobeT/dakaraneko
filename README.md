@@ -25,7 +25,8 @@ Refer to the parsers and config file in the Dakara commands.
 
 ## Setting up dakara-server for use with dakaraneko
 
-Get the latest release of dakara-server
+Get the latest release of [dakara-server](https://github.com/DakaraProject/dakara-server/releases)
+
 ### dakara-server installation
 
 Install dakara-server dependencies:
