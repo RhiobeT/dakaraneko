@@ -35,6 +35,8 @@ def get_artists(tags):
             return scrap_anime(tags['title_work'], saved_data)
         else: # Index not in list despite scrapping... Can't do anything else here
             return []
+    else:
+        return []
 
 
 def scrap_anime(name, data):
