@@ -20,15 +20,21 @@ def get_artists(tags):
     json_file.close()
 
     # If we don't find the anime, let's scrap MAL
+    scrapped = False
     if tags['title_work'] not in saved_data[0]: # We check
         scrap_anime(tags['title_work'], saved_data)
+        scrapped = True
 
     # If we find the anime, let's get the artists
     if tags['title_work'] in saved_data[0]:
-        if tags['link_nb'] == '':
+        if tags['link_nb'] == 0: # No index, we take the first one
             return saved_data[0][tags['title_work']][tags['link_type']][0]
-        else:
-            return saved_data[0][tags['title_work']][tags['link_type']][int(tags['link_nb'])-1]
+        elif tags['link_nb']-1 < len(saved_data[0][tags['title_work']][tags['link_type']]): # Index in list, we use it
+            return saved_data[0][tags['title_work']][tags['link_type']][tags['link_nb']-1]
+        elif not scrapped: # Index not in list but no scrapping done... Local data may not be updated so we do it now
+            return scrap_anime(tags['title_work'], saved_data)
+        else: # Index not in list despite scrapping... Can't do anything else here
+            return []
 
 
 def scrap_anime(name, data):
@@ -58,14 +64,14 @@ def scrap_anime(name, data):
     
     if anime != name: # If we didn't get a perfect match, we will ask the user
         i = 0
-        for anime in found:
-            print(str(i) + ": " + anime)
-            i = i + 1
+        animes_found = list(found)
+        for i in range(len(animes_found)):
+            print(str(i) + ": " + animes_found[i])
         match_index = input(name + ": which is the right one? ")
         if (int(match_index) >= N): # No match, no need to continue
             return
 
-        anime = list(found)[int(match_index)] # Dictionaries are ordered since Python 3.6, so it should be fine >.>
+        anime = animes_found[int(match_index)]
 
     # Second step: getting the page of the found anime
     r = requests.get(found[anime])
