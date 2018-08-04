@@ -4,6 +4,7 @@
 #
 
 from karaneko.nekoparse import NekoParseAnime, NekoParseTagsAnime
+from mal_scrapper import get_artists
 
 def extract_tags(tags):
     """ From the tags dictionnary, returns list of tags
@@ -56,6 +57,10 @@ def parse_file_name(file_name):
 
     if anime.extras.original_artist:
         result['artists'].append(anime.extras.original_artist)
+
+    # Add MAL scrapped artists
+    for artist in get_artists(result):
+        result['artists'].append(artist)
 
     detail_video_list = []
     if extras.video:
