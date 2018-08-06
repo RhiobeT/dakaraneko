@@ -60,7 +60,8 @@ def parse_file_name(file_name):
 
     # Add MAL scrapped artists
     for artist in get_artists(result):
-        result['artists'].append(artist)
+        if artist not in results['artists']:
+            result['artists'].append(artist)
 
     detail_video_list = []
     if extras.video:

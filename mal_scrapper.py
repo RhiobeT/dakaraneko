@@ -3,7 +3,7 @@
 # Dakara Project
 #
 
-import json, html, os, re, requests
+import bs4 as bs, json, html, os, re, requests
 
 json_file_path = ''
 
@@ -56,48 +56,40 @@ def scrap_anime(name, data):
 
     # First steap: finding the page of the anime, using the search engine
     r = requests.get('https://myanimelist.net/anime.php?q=' + name)
-    result = r.text
     found = {}
 
     i = 0
     N = 10 # Max number of results kept
-    for entry in result.split('\n'):
-        if '<a class="hoverinfo_trigger fw-b fl-l"' in entry:
-            if i >= N: # We won't keep more than N entries
-                break;
-            i = i + 1
 
-            anime = re.sub('^.*<strong>([^"]*)</strong>.*$', r'\1', entry)
-            link = re.sub('^.*" href="([^"]*)".*$', r'\1', entry) 
-            found[anime] = link # We store the result and continue
+    parsed = bs.BeautifulSoup(r.text, features='html.parser')
+    animes_list = parsed.find('div', {'class': 'js-block-list'}).table.findAll('tr')
 
-            if html.unescape(anime) == name: # If we find a perfect match, that's great!
-                break
+    for i in range(1, N + 1): # We won't keep more than N entries
+        anime = html.unescape(animes_list[i].find('strong').string)
+        link = animes_list[i].find('a', {'class': 'hoverinfo_trigger'})['href']
+        found[anime] = link # We store the result and continue
+
+        if anime == name: # If we find a perfect match, that's great!
+            break
     
-    if html.unescape(anime) != name: # If we didn't get a perfect match, we will ask the user
-        i = 0
+    if anime != name: # If we didn't get a perfect match, we will ask the user
         animes_found = list(found)
         print()
         for i in range(len(animes_found)):
-            print(str(i) + ": " + html.unescape(animes_found[i]))
-        match_index = input(name + ": which is the right one? ")
-        if (int(match_index) >= N): # No match, no need to continue
+            print(str(i) + ": " + animes_found[i])
+        match_index = int(input(name + ": which is the right one? "))
+        if (match_index >= N): # No match, no need to continue
             return
 
-        anime = animes_found[int(match_index)]
+        anime = animes_found[match_index]
 
     # Second step: getting the page of the found anime
     r = requests.get(found[anime])
-    result = r.text
-    op = []
-    ed = []
+    parsed = bs.BeautifulSoup(r.text, features='html.parser')
 
     # Third step: extracting the artists
-    for line in result.split('\n'):
-        if '<div class="theme-songs js-theme-songs opnening">' in line:
-            op = extract_artists(line)
-        if '<div class="theme-songs js-theme-songs ending">' in line:
-            ed = extract_artists(line)
+    op = extract_artists(parsed.find('div', {'class': 'opnening'}))
+    ed = extract_artists(parsed.find('div', {'class': 'ending'}))
 
     # Fourth step: saving the data locally
     data[0][name] = {}
@@ -109,21 +101,20 @@ def scrap_anime(name, data):
     json_file.close()
 
 
-def extract_artists(line):
+def extract_artists(tag):
     """
-    When scrapping, extracts the artists from the html line that contains them.
+    When scrapping, extracts the artists from the div that contains them.
     """
     artists = []
-    for entry in line.split('<br>'): # For each theme
-        if entry != "</div>": # This ignores the last entry
-            temp_artists = []
-            found = re.sub('^.*&quot; by ([^<]*)</span>$', r'\1', entry) # This gets the artists
-            found = re.sub(' \(ep.*\)$', '', found) # This removes the information about the episodes
-            found = found.encode("ascii", errors="ignore").decode() # This removes the non ASCII characters
-            found = re.sub(' \( *\)', '', found) # This removes the parenthesis with spaces only
-            for artist in found.split(', '): # Here we split if there are multiple artists
-                artist = re.sub('^.* \((.*)\)', r'\1', artist) # For the cases where the real artist is in parenthesis
-                temp_artists.append(html.unescape(artist))
-            artists.append(temp_artists)
+    for entry in tag.findAll('span', {'class': 'theme-song'}): # For each theme
+        temp_artists = []
+        found = re.sub('^.*[\"\)] ?by (.*)$', r'\1', html.unescape(entry.string)) # This gets the artists (by finding 'by')
+        found = re.sub(' \(.*ep[^\(]*\)$', '', found) # This removes the information about the episodes (by finding 'ep')
+        found = found.encode("ascii", errors="ignore").decode() # This removes the non ASCII characters
+        found = re.sub(' \( *\)', '', found) # This removes the parenthesis with spaces only (after non ASCII deletion)
+        for artist in found.split(', '): # Here we split if there are multiple artists
+            artist = re.sub('^.* \((.*)\)', r'\1', artist) # For the cases where the real artist is in parenthesis
+            temp_artists.append(artist)
+        artists.append(temp_artists)
 
     return artists
