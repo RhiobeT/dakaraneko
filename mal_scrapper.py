@@ -27,20 +27,24 @@ def get_artists(tags, force_scrap=False):
     saved_data = json.load(json_file)
     json_file.close()
 
+    name = tags['title_work']
+    if tags['subtitle_work'] != '':
+        name = name + ' ~ ' + tags['subtitle_work']
+
     # If we don't find the anime, let's scrap MAL
     scrapped = False
-    if tags['title_work'] not in saved_data[0] or force_scrap: # We check if we don't already have the anime scrapped
-        scrap_anime(tags['title_work'], saved_data)
+    if name not in saved_data[0] or force_scrap: # We check if we don't already have the anime scrapped
+        scrap_anime(name, saved_data)
         scrapped = True
 
     # If we find the anime, let's get the artists
-    if tags['title_work'] in saved_data[0]:
+    if name in saved_data[0]:
         index = tags['link_nb']
         if index > 0: # The index is either 0, or n+1 (n being the theme we want)
             index = index - 1
 
-        if index < len(saved_data[0][tags['title_work']][tags['link_type']]): # Index in list, we use it
-            return saved_data[0][tags['title_work']][tags['link_type']][index]
+        if index < len(saved_data[0][name][tags['link_type']]): # Index in list, we use it
+            return saved_data[0][name][tags['link_type']][index]
         elif not scrapped: # Index not in list but no scrapping done... Local data may not be updated so we do it now
             return get_artists(tags, True)
         else: # Index not in list despite scrapping... Can't do anything else here
