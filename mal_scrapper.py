@@ -48,6 +48,7 @@ def get_artists(tags, force_scrap=False):
         elif not scrapped: # Index not in list but no scrapping done... Local data may not be updated so we do it now
             return get_artists(tags, True)
         else: # Index not in list despite scrapping... Can't do anything else here
+            print('\nWARNING MAL_Scrapper: ' + name + ' ' + tags['link_type'] + str(tags['link_nb']) + ' not found')
             return []
     else:
         return []
@@ -59,7 +60,7 @@ def scrap_anime(name, data):
     """
 
     # First steap: finding the page of the anime, using the search engine
-    r = requests.get('https://myanimelist.net/anime.php?q=' + name)
+    r = requests.get('https://myanimelist.net/anime.php?q="' + name + '"')
     found = {}
 
     i = 0
@@ -112,9 +113,9 @@ def extract_artists(tag):
     artists = {}
     for entry in tag.findAll('span', {'class': 'theme-song'}): # For each theme
         temp_artists = []
-        number = re.sub('^#([0-9]+).*$', r'\1', entry.string) # This gets the id of the theme
+        number = re.sub('^#0*([0-9]+).*$', r'\1', entry.string) # This gets the id of the theme
         if number == entry.string:
-            number = '1'
+            number = str(len(artists) + 1)
         found = re.sub('^.*[\"\)]:? *by (.*)$', r'\1', html.unescape(entry.string)) # This gets the artists (by finding 'by')
         if found == html.unescape(entry.string):
             found = re.sub('^.*[\"\)]:? *composed by (.*)$', r'\1', html.unescape(entry.string))
@@ -122,11 +123,13 @@ def extract_artists(tag):
                 found = re.sub('^.*[\"\)]:? *- (.*)$', r'\1', html.unescape(entry.string))
                 if found == html.unescape(entry.string):
                     found = ''
-        found = re.sub(' \(.*ep[^\(]*\)$', '', found) # This removes the information about the episodes (by finding 'ep')
+        found = re.sub(' \(.*[eE]p[^\(]*\)\.?$', '', found) # This removes the information about the episodes (by finding 'ep')
+        found = re.sub(' \(TV.*\)$', '', found) # This removes parenthesis begining by TV
         found = found.encode("ascii", errors="ignore").decode() # This removes the non ASCII characters
         found = re.sub(' \( *\)', '', found) # This removes the parenthesis with spaces only (after non ASCII deletion)
         for artist in found.split(', '): # Here we split if there are multiple artists
             artist = re.sub('^.* \((.*)\)', r'\1', artist) # For the cases where the real artist is in parenthesis
+            artist = re.sub('^CV: ', '', artist) # For the cases where the artist begins by CV:
             temp_artists.append(artist)
         artists[number] = temp_artists
 
