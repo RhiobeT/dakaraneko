@@ -21,7 +21,7 @@ def extract_tags(tags):
 
     return tags_list
 
-def parse_file_name(file_name):
+def parse_file_name(file_name, scrap=True):
     """ From a file name, returns a dictionnary with revelant values 
     """
     result = {}
@@ -59,9 +59,10 @@ def parse_file_name(file_name):
         result['artists'].append(anime.extras.original_artist)
 
     # Add MAL scrapped artists
-    for artist in get_artists(result):
-        if artist not in result['artists']:
-            result['artists'].append(artist)
+    if scrap:
+        for artist in get_artists(result):
+            if artist not in result['artists']:
+                result['artists'].append(artist)
 
     detail_video_list = []
     if extras.video:
