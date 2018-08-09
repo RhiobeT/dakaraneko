@@ -102,7 +102,7 @@ def scrap_anime(name, data):
     data[0][name]['ED'] = ed
 
     json_file = open(json_file_path, 'w')
-    json.dump(data, json_file)
+    json.dump(data, json_file, indent=2, sort_keys=True)
     json_file.close()
 
 
@@ -123,13 +123,16 @@ def extract_artists(tag):
                 found = re.sub('^.*[\"\)]:? *- (.*)$', r'\1', html.unescape(entry.string))
                 if found == html.unescape(entry.string):
                     found = ''
-        found = re.sub(' \(.*[eE]p[^\(]*\)\.?$', '', found) # This removes the information about the episodes (by finding 'ep')
+        found = re.sub(' \( *[eE]p[^\(]*\)\.?$', '', found) # This removes the information about the episodes (by finding 'ep')
         found = re.sub(' \(TV.*\)$', '', found) # This removes parenthesis begining by TV
+        found = re.sub(' \(BD.*\)$', '', found) # This removes parenthesis begining by BD
+        found = re.sub(' \(DVD.*\)$', '', found) # This removes parenthesis begining by DVD
         found = found.encode("ascii", errors="ignore").decode() # This removes the non ASCII characters
         found = re.sub(' \( *\)', '', found) # This removes the parenthesis with spaces only (after non ASCII deletion)
         for artist in found.split(', '): # Here we split if there are multiple artists
             artist = re.sub('^.* \((.*)\)', r'\1', artist) # For the cases where the real artist is in parenthesis
-            artist = re.sub('^CV: ', '', artist) # For the cases where the artist begins by CV:
+            artist = re.sub('^CV: ', '', artist) # For the cases where the artist begins by CV
+            artist = re.sub('^Seiyuu: ', '', artist) # For the cases where the artist begins by Seiyuu
             temp_artists.append(artist)
         artists[number] = temp_artists
 
