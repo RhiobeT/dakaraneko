@@ -9,7 +9,7 @@ from music_parse import parse_file_name as music_parse_file_name
 from karaneko.nekoparse import ConventionError
 
 REGEX_TAGS = r".*? - (?P<tags>.*?) - .*"
-REGEX_ANIME_TAGS = r"^OP\d*|ED\d*|INS|IS$"
+REGEX_ANIME_TAGS = r"^(OP\d*|ED\d*|INS|IS)$"
 
 def parse_file_name(file_name):
     """ AutoDetect file name as anime or music
