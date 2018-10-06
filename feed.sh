@@ -5,9 +5,9 @@
 #
 
 set -e
-DAKARA_SERVER_DIR=/home/benjamin/Dakara/dakara-server
-DAKARANEKO_DIR=/home/benjamin/Dakara/dakaraneko
-KARA_DIR=/media/benjamin/Maxtor/Kara_Japan7
+DAKARA_SERVER_DIR=/path/to/dakara-server
+DAKARANEKO_DIR=/path/to/dakaraneko
+KARA_DIR=/path/to/kara_folder/
 OPTIONS="--prune --append-only --no-progress"
 cd ${DAKARA_SERVER_DIR}/dakara_server
 

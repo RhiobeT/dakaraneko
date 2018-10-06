@@ -45,13 +45,15 @@ if __name__ == "__main__":
                 if subtitle:
                     name = title + " ~ " + subtitle
 
-                cond1 = name not in data
-                #cond2 = name in data and not (
-                #        'mal_title' in data[name] and 'link' in data[name])
-                if cond1:
+                if name not in data:
                     # Scrap if not already scrapped
                     query = title + " " + subtitle
                     if name in data:
                         query = data[name].get('mal_title', query)
                     print(query)
-                    scrap_anime(title, data, query.strip(), json_file_path=path_output, subtitle=subtitle)
+                    scrap_anime(
+                            title,
+                            data,
+                            query.strip(),
+                            json_file_path=path_output,
+                            subtitle=subtitle)
