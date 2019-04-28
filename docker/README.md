@@ -42,7 +42,7 @@ Run the `install` command with compose from this directory to setup the server:
 docker-compose run dakara install
 ```
 
-You will be asked to choose the credentials for the server's superuser during the process.
+You will be asked to choose the credentials for the server's superuser, then for the player's account, during the process.
 
 ## Server start
 
