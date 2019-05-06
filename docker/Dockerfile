@@ -9,9 +9,6 @@ RUN chmod u+x get_dakara.sh && /get_dakara.sh
 
 RUN pip install -r /dakara-server/requirements.txt
 
-RUN cp /dakara-server/dakara_server/dakara_server/local_settings.py.example /dakara-server/dakara_server/dakara_server/local_settings.py
-RUN sed -i "s/^ALLOWED_HOSTS = \[/ALLOWED_HOSTS = ['*'/" /dakara-server/dakara_server/dakara_server/local_settings.py
-
 COPY ./ /dakaraneko
 RUN pip install -r dakaraneko/karaneko/requirements.txt
 
