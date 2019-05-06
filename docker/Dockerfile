@@ -12,7 +12,9 @@ RUN pip install -r /dakara-server/requirements.txt
 COPY ./ /dakaraneko
 RUN pip install -r dakaraneko/karaneko/requirements.txt
 
-RUN sed -i -e 's+^DAKARA_SERVER_DIR=.*$+DAKARA_SERVER_DIR=/dakara-server+' -e 's+^DAKARANEKO_DIR=.*$+DAKARANEKO_DIR=/dakaraneko+' -e 's+^KARA_DIR=.*$+KARA_DIR=/karabase+' /dakaraneko/feed.sh
+ENV DAKARA_SERVER_DIR=/dakara-server
+ENV DAKARANEKO_DIR=/dakaraneko
+ENV KARA_DIR=/karabase
 
 COPY docker/entrypoint.sh /
 RUN chmod u+x entrypoint.sh
