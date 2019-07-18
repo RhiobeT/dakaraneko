@@ -10,7 +10,7 @@ RUN chmod u+x get_dakara.sh && /get_dakara.sh
 RUN pip install -r /dakara-server/requirements.txt
 
 COPY ./ /dakaraneko
-RUN pip install -r dakaraneko/karaneko/requirements.txt
+RUN pip install -r /dakaraneko/karaneko/requirements.txt
 
 ENV DAKARA_SERVER_DIR=/dakara-server
 ENV DAKARANEKO_DIR=/dakaraneko
